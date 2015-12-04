@@ -1,10 +1,8 @@
 
 import argparse
 import os
-import pymongo
-import json, ast
-
 from pymongo import MongoClient
+
 client = MongoClient()
 db = client.borrower_db
 class Borrower:
@@ -18,7 +16,7 @@ parser.add_argument('-m', '--money', help='specify amount borrowed', default="-1
 parser.add_argument('-d', '--delete', help='remove borrower', default="-1")
 parser.add_argument('-u', '--update', help='update borrower', default="-1")
 parser.add_argument('-l', '--list', help='list all borrowers', default="-1", action="store_true")
-parser.add_argument('-show', '--show', help='show specific borrowers', default="-1")
+parser.add_argument('-s', '--show', help='show specific borrowers', default="-1")
 
 args = parser.parse_args()
 
@@ -26,12 +24,13 @@ def add(borrower):
     print "Adding", borrower.name + "..."
     inst_id = db.borrowers.insert_one({"Name": borrower.name, "Amount":borrower.amount }).inserted_id
     print "Created entry", inst_id
-def delete(borrower):
-    pass
+def delete(borrower_name):
+    result = db.borrowers.delete_many({"Name": borrower_name})
+
 
 def update(borrower_name, amount):
     print "Updating", args.update
-    result = db.borrowers.update_one(
+    result = db.borrowers.update_many(
     {"Name": borrower_name},
     {
         "$set": {
@@ -61,6 +60,8 @@ def main():
         list_all()
     if(args.show != '-1'):
         read(args.show)
+    if(args.delete != '-1'):
+        delete(args.delete)
 
 if __name__ == "__main__":
     main()
