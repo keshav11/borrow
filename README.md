@@ -1,3 +1,3 @@
 #borrow
-Maintain a list of people who owe you money on command line
+Maintain a list of people who owe you money through command line
 
