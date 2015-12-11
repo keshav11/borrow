@@ -3,7 +3,7 @@ Maintain a list of people who owe you money through command line
 
 ##Prerequisites
 * Python 2.7
-* Mongodb
+* MongoDb
 
 ##Features
 * Maintain and update a list of people who owe you money with the amount
@@ -32,3 +32,6 @@ $ python main.py -d MoneyBorrower
 <pre>
 $ python main.py -s MoneyBorrower
 </pre>
+
+##TODO
+* Add setup
