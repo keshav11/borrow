@@ -1,8 +1,13 @@
 #borrow
 Maintain a list of people who owe you money through command line
 
+##Prerequisites
+* Python 2.7
+* Mongodb
+
 ##Features
 * Maintain and update a list of people who owe you money with the amount
+* Persists data using MongoDb
 
 ##Usage
 ####Add borrower
