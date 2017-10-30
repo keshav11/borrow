@@ -17,16 +17,18 @@ parser.add_argument('-d', '--delete', help='remove borrower', default="-1")
 parser.add_argument('-u', '--update', help='update borrower', default="-1")
 parser.add_argument('-l', '--list', help='list all borrowers', default="-1", action="store_true")
 parser.add_argument('-s', '--show', help='show specific borrowers', default="-1")
+parser.add_argument('-c', '--currency', help='specify currency', default="USD")
 
 args = parser.parse_args()
 
 def add(borrower):
     print "Adding", borrower.name + "..."
-    inst_id = db.borrowers.insert_one({"Name": borrower.name, "Amount":borrower.amount }).inserted_id
+    inst_id = db.borrowers.insert_one({"Name": borrower.name, "Amount":borrower.amount,
+     "Currency":args.currency }).inserted_id
     print "Created entry", inst_id
+
 def delete(borrower_name):
     result = db.borrowers.delete_many({"Name": borrower_name})
-
 
 def update(borrower_name, amount):
     print "Updating", args.update
@@ -40,15 +42,14 @@ def update(borrower_name, amount):
     }
 )
 
-
 def read(borrower_name):
     borrowers = db.borrowers.find({"Name":borrower_name})
     for borrower in borrowers:
-        print borrower['Name'], borrower['Amount']
+        print borrower['Name'], borrower['Amount'], borrower['Currency']
 
 def list_all():
     for borrower in db.borrowers.find():
-        print borrower['Name'], borrower['Amount']
+        print borrower['Name'], borrower['Amount'], borrower['Currency']
 
 def main():
     if(args.add != '-1'):
