@@ -12,7 +12,7 @@ Maintain a list of people who owe you money through command line
 ## Usage
 #### Add borrower
 <pre>
-$ python main.py -a MoneyBorrower -m 100
+$ python main.py -a borrower_name 100
 </pre>
 #### List all borrowers
 <pre>
@@ -20,7 +20,7 @@ $ python main.py -l
 </pre>
 #### Update a borrower
 <pre>
-$ python main.py -u MoneyBorrower -m 100
+$ python main.py -u MoneyBorrower 100
 </pre>
 
 #### Delete a borrower
@@ -35,3 +35,4 @@ $ python main.py -s MoneyBorrower
 
 ## TODO
 * Add setup
+* write to file

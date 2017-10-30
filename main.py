@@ -11,41 +11,50 @@ class Borrower:
         self.amount = amount
 
 parser = argparse.ArgumentParser(description='Maintains a list of people who owe you money')
-parser.add_argument('-a', '--add', help='add borrower', default="-1")
-parser.add_argument('-m', '--money', help='specify amount borrowed', default="-1", type=int)
+parser.add_argument('-a', '--add', nargs=2, help='add borrower', default="-1")
 parser.add_argument('-d', '--delete', help='remove borrower', default="-1")
-parser.add_argument('-u', '--update', help='update borrower', default="-1")
+parser.add_argument('-u', '--update', nargs=2, help='update borrower',default="-1")
 parser.add_argument('-l', '--list', help='list all borrowers', default="-1", action="store_true")
 parser.add_argument('-s', '--show', help='show specific borrowers', default="-1")
 parser.add_argument('-c', '--currency', help='specify currency', default="USD")
 
 args = parser.parse_args()
 
+def get_borrower(borrower_name):
+    return db.borrowers.find({"Name":borrower_name})
+
 def add(borrower):
     print "Adding", borrower.name + "..."
-    inst_id = db.borrowers.insert_one({"Name": borrower.name, "Amount":borrower.amount,
-     "Currency":args.currency }).inserted_id
-    print "Created entry", inst_id
+    if(get_borrower(borrower.name).count() > 0):
+        print borrower.name, "already exists.", "Try updating instead."
+    else:
+        inst_id = db.borrowers.insert_one({"Name": borrower.name, "Amount":borrower.amount,
+         "Currency":args.currency }).inserted_id
+        print borrower.name, "added."
 
 def delete(borrower_name):
     result = db.borrowers.delete_many({"Name": borrower_name})
 
 def update(borrower_name, amount):
-    print "Updating", args.update
+    print "Updating", borrower_name
+    borrowers = get_borrower(borrower_name)
+    if borrowers.count() == 0:
+        print "No borrower named", borrower_name, "found."
+        return
     result = db.borrowers.update_many(
     {"Name": borrower_name},
     {
         "$set": {
-            "Amount": amount
+            "Amount": borrowers[0]['Amount']+amount,
+            "Currency": args.currency
         },
         "$currentDate": {"lastModified": True}
     }
 )
 
 def read(borrower_name):
-    borrowers = db.borrowers.find({"Name":borrower_name})
-    for borrower in borrowers:
-        print borrower['Name'], borrower['Amount'], borrower['Currency']
+     borrower = get_borrower(borrower_name)[0]
+     print borrower['Name'], borrower['Amount'], borrower['Currency']
 
 def list_all():
     for borrower in db.borrowers.find():
@@ -53,10 +62,10 @@ def list_all():
 
 def main():
     if(args.add != '-1'):
-        b = Borrower(args.add, args.money)
+        b = Borrower(args.add[0], int(args.add[1]))
         add(b)
     if(args.update != '-1'):
-        update(args.update, args.money)
+        update(args.update[0], int(args.update[1]))
     if(args.list != '-1'):
         list_all()
     if(args.show != '-1'):
