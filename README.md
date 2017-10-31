@@ -40,3 +40,5 @@ $ python main.py -w filename
 
 ## TODO
 * Add setup
+* import from file
+* add web based interface
