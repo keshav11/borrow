@@ -2,23 +2,7 @@
 import argparse
 import os
 from pymongo import MongoClient
-
-client = MongoClient()
-db = client.borrower_db
-class Borrower:
-    def __init__(self,name, amount):
-        self.name = name
-        self.amount = amount
-
-parser = argparse.ArgumentParser(description='Maintains a list of people who owe you money')
-parser.add_argument('-a', '--add', nargs=2, help='add borrower', default="-1")
-parser.add_argument('-d', '--delete', help='remove borrower', default="-1")
-parser.add_argument('-u', '--update', nargs=2, help='update borrower',default="-1")
-parser.add_argument('-l', '--list', help='list all borrowers', default="-1", action="store_true")
-parser.add_argument('-s', '--show', help='show specific borrowers', default="-1")
-parser.add_argument('-c', '--currency', help='specify currency', default="USD")
-
-args = parser.parse_args()
+from models import borrower
 
 def get_borrower(borrower_name):
     return db.borrowers.find({"Name":borrower_name})
@@ -60,7 +44,28 @@ def list_all():
     for borrower in db.borrowers.find():
         print borrower['Name'], borrower['Amount'], borrower['Currency']
 
+def write_to_file(file_name):
+    with open(file_name, "w") as f:
+        f.write("{:<30} {:<30}".format('Name', 'Amount'))
+        f.write("\n--------------------------------------------\n")
+        for borrower in db.borrowers.find():
+             f.write("{:<30} {:<} {:<}".format(borrower['Name'], borrower['Amount'], borrower['Currency']))
+             f.write("\n")
+
+client = MongoClient()
+db = client.borrower_db
+parser = argparse.ArgumentParser(description='Maintains a list of people who owe you money')
+parser.add_argument('-a', '--add', nargs=2, help='add borrower', default="-1")
+parser.add_argument('-d', '--delete', help='remove borrower', default="-1")
+parser.add_argument('-u', '--update', nargs=2, help='update borrower',default="-1")
+parser.add_argument('-l', '--list', help='list all borrowers', default="-1", action="store_true")
+parser.add_argument('-s', '--show', help='show specific borrowers', default="-1")
+parser.add_argument('-c', '--currency', help='specify currency', default="USD")
+parser.add_argument('-w', '--write', help='write_to_file', default="borrowers.txt")
+args = parser.parse_args()
+
 def main():
+
     if(args.add != '-1'):
         b = Borrower(args.add[0], int(args.add[1]))
         add(b)
@@ -72,6 +77,8 @@ def main():
         read(args.show)
     if(args.delete != '-1'):
         delete(args.delete)
+    if(args.write != '-1'):
+        write_to_file(args.write)
 
 if __name__ == "__main__":
     main()
