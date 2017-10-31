@@ -33,5 +33,10 @@ $ python main.py -d borrower_name
 $ python main.py -s borrower_name
 </pre>
 
+#### Write to file
+<pre>
+$ python main.py -w filename
+</pre>
+
 ## TODO
 * Add setup
