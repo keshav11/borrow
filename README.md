@@ -20,19 +20,25 @@ $ python main.py -l
 </pre>
 #### Update a borrower
 <pre>
-$ python main.py -u MoneyBorrower 100
+$ python main.py -u borrower_name 100
 </pre>
 
 #### Delete a borrower
 <pre>
-$ python main.py -d MoneyBorrower
+$ python main.py -d borrower_name
 </pre>
 
 #### Show a specific borrower
 <pre>
-$ python main.py -s MoneyBorrower
+$ python main.py -s borrower_name
+</pre>
+
+#### Write to file
+<pre>
+$ python main.py -w filename
 </pre>
 
 ## TODO
 * Add setup
-* write to file
+* import from file
+* add web based interface
